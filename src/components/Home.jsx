@@ -3,6 +3,7 @@ import { GridContextProvider, GridDropZone, GridItem, swap } from 'react-grid-dn
 
 const Home = () => {
     const [items, setItems] = useState([]);
+    const [selectedItems, setSelectedItems] = useState([]);
 
     useEffect(() => {
         fetch('/public/items.json')
@@ -19,9 +20,31 @@ const Home = () => {
         return false;
     };
 
+    const handleSelectItem = (_id) => {
+        const updatedSelection = selectedItems.includes(_id)
+            ? selectedItems.filter((item) => item !== _id)
+            : [...selectedItems, _id];
+        setSelectedItems(updatedSelection);
+    };
+
+    const handleDeleteSelected = () => {
+        const updatedItems = items.filter(item => !selectedItems.includes(item._id));
+        setItems(updatedItems);
+        setSelectedItems([]);
+    };
+
     return (
         <div>
-            <h1>Hello Boys</h1>
+            <div className='flex justify-between my-10'>
+                <h1>Hello Boys</h1>
+                <div>
+                    {selectedItems.length > 0 && (
+                        <div>
+                            <button className='btn btn-warning btn-sm' onClick={handleDeleteSelected}>Delete Selected</button>
+                        </div>
+                    )}
+                </div>
+            </div>
             <div className='grid'>
                 <GridContextProvider onChange={onChange}>
                     <GridDropZone
@@ -32,7 +55,13 @@ const Home = () => {
                     >
                         {items.map((item, index) => (
                             <GridItem key={index}>
-                                <div className="relative select-none">
+                                <div onClick={() => handleSelectItem(item._id)} className={`relative select-none ${selectedItems.includes(item._id) ? 'selected' : ''}`}>
+                                    <input className='absolute'
+                                        type="checkbox"
+                                        checked={selectedItems.includes(item._id)}
+                                        onChange={() => { }}
+                                        onClick={(e) => e.stopPropagation()} // Prevent item click when checkbox is clicked
+                                    />
                                     <div className="rounded-lg overflow-hidden hover:brightness-75 transition-all">
                                         <img
                                             src={item.image}
