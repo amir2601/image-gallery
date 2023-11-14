@@ -45,18 +45,21 @@ const Home = () => {
                     )}
                 </div>
             </div>
-            <div className='grid'>
+            <div>
                 <GridContextProvider onChange={onChange}>
                     <GridDropZone
                         id='items'
                         boxesPerRow={5}
                         rowHeight={280}
-                        style={{ height: 280 * Math.ceil(items.length) }}
+                        style={{
+                            height: 280 * Math.ceil(items.length),
+                            margin: '0 8px'
+                        }}
                     >
                         {items.map((item, index) => (
                             <GridItem key={index}>
                                 <div onClick={() => handleSelectItem(item._id)} className={`relative select-none ${selectedItems.includes(item._id) ? 'selected' : ''}`}>
-                                    <input className='absolute'
+                                    <input className='absolute top-3 left-3'
                                         type="checkbox"
                                         checked={selectedItems.includes(item._id)}
                                         onChange={() => { }}
